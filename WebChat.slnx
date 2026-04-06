@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="WebChat/WebChat.Client/WebChat.Client.csproj" />
+  <Project Path="WebChat/WebChat/WebChat.csproj" />
+</Solution>
