@@ -2,20 +2,23 @@
 
 <div class="layout">
 
-    <!-- NAVBAR -->
     <header class="navbar">
-        <div class="logo">WebChat</div>
+        <div class="logo" @onclick="() => NavManager.NavigateTo('/'.ToString())">
+            WebChat
+        </div>
 
         <nav class="nav-links">
-            <a href="/">Home</a>
             <a href="/login">Login</a>
             <a href="/register" class="btn-outline">Register</a>
         </nav>
     </header>
 
-    <!-- PAGE CONTENT -->
     <main class="content">
         @Body
     </main>
 
 </div>
+
+@code {
+    [Inject] NavigationManager NavManager { get; set; }
+}
