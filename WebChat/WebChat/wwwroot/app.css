@@ -18,8 +18,12 @@
 /* === LEARN SECTION === */
 .learn-section {
     padding: 100px 40px;
-    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.2));
     text-align: center;
+    position: relative;
+    z-index: 2;
+    margin-top: -120px;
+    padding-top: 160px;
+    background: linear-gradient( to bottom, rgba(73,77,95,0) 0%, rgba(73,77,95,0.9) 40%, var(--bg-main) 100% );
 }
 
 .section-title {
@@ -131,61 +135,64 @@ body {
 
 .btn-primary {
     position: relative;
+    padding: 14px 26px;
+    border-radius: 12px; /* идеально округлено */
     background: linear-gradient(135deg, var(--accent), #6f46a3);
-    padding: 12px 20px;
-    border-radius: 8px;
-    text-decoration: none;
     color: white;
-    transition: 0.3s;
-    overflow: hidden;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    letter-spacing: 0.3px;
     border: none;
+    overflow: hidden; /* обязательно, чтобы shine не вылазил */
+    transition: all 0.25s ease;
 }
 
-    /* glow эффект */
+    /* shine/glow */
     .btn-primary::before {
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
-        opacity: 0;
-        transition: 0.5s;
+        border-radius: 12px;
+        background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.7s ease;
     }
 
-    /* hover */
     .btn-primary:hover::before {
-        opacity: 1;
-        animation: shine 1s linear;
+        transform: translateX(100%); /* движение shine */
     }
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(132, 88, 179, 0.4);
+        box-shadow: 0 12px 30px rgba(132, 88, 179, 0.45);
     }
 
-    /* click */
     .btn-primary:active {
         transform: scale(0.98);
     }
 
-/* animation */
-@keyframes shine {
-    from {
-        transform: translateX(-100%);
-    }
-
-    to {
-        transform: translateX(100%);
-    }
-}
 
 .btn-secondary {
+    position: relative;
     margin-left: 10px;
     padding: 12px 20px;
-    border-radius: 8px;
+    border-radius: 12px;
+    display: inline-flex;
     border: 1px solid var(--soft);
     text-decoration: none;
     color: var(--white);
+    transition: all 0.25s ease;
 }
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(132, 88, 179, 0.45);
+        color: var(--bg-light);
+    }
+
+
 
 /* === HERO === */
 .hero {
@@ -193,8 +200,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
+    position: sticky;
+    top: 80px;
+    z-index: 1;
     overflow: hidden;
+    transition: opacity 0.2s linear, transform 0.2s linear, filter 0.2s;
+    will-change: opacity, transform;
 }
 
 .hero-content {
@@ -401,3 +412,4 @@ body {
         transform: scale(1);
     }
 }
+
