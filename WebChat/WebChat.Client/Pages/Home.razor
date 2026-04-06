@@ -1,18 +1,25 @@
 ﻿@page "/"
 
-<div class="home-center">
+<div class="home-container">
 
-    <div class="bg-glow"></div>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fade-in">
+                Simple. Fast. Real-time Chat.
+            </h1>
 
-    <div class="home-content">
-        <p class="slogan">
-            Talk instantly. Connect globally.  
-            Your conversations — reimagined.
-        </p>
-        
-        <div class="hero-actions">
-            <input placeholder="Email or phone" />
-            <button onclick="location.href='/register'">Get Started</button>
+            <p class="fade-in delay">
+                Communicate instantly with modern messaging and video calls.
+            </p>
+
+            <div class="hero-buttons fade-in delay-2">
+                <a href="/register" class="btn-primary">Start chatting</a>
+                <a href="/login" class="btn-secondary">Learn more</a>
+            </div>
         </div>
-    </div>
+
+        <div class="hero-bg"></div>
+    </section>
+
 </div>

@@ -1,38 +1,21 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager Nav
 
-<div class="navbar">
-    <div class="nav-container">
+<div class="layout">
 
-        <!-- LEFT (пусто для баланса) -->
-        <div class="nav-left"></div>
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="logo">WebChat</div>
 
-        <!-- CENTER LOGO -->
-        <div class="logo-center" @onclick="ReloadHome">
-            WebChat
-        </div>
-
-        <!-- RIGHT -->
-        <div class="auth">
+        <nav class="nav-links">
+            <a href="/">Home</a>
             <a href="/login">Login</a>
-            <a href="/register" class="signup">Sign up</a>
-        </div>
+            <a href="/register" class="btn-outline">Register</a>
+        </nav>
+    </header>
 
-    </div>
+    <!-- PAGE CONTENT -->
+    <main class="content">
+        @Body
+    </main>
+
 </div>
-
-<div class="content">
-    @Body
-</div>
-
-<!-- FOOTER -->
-<div class="footer">
-    <a href="/support">Support</a>
-</div>
-
-@code {
-    void ReloadHome()
-    {
-        Nav.NavigateTo("/", forceLoad: true);
-    }
-}
