@@ -98,6 +98,23 @@ namespace WebChat
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
 
+            app.MapPost("/api/register", async (
+    UserManager<ApplicationUser> userManager,
+    RegisterModel model) =>
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.Username,
+                    Email = model.Email
+                };
+
+                var result = await userManager.CreateAsync(user, model.Password);
+
+                if (!result.Succeeded)
+                    return Results.BadRequest(result.Errors.Select(e => e.Description));
+
+                return Results.Ok();
+            });
 
             app.Run();
         }

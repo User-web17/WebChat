@@ -19,7 +19,7 @@
 
         <h2>Sign in</h2>
 
-        <EditForm Model="Input" OnValidSubmit="LoginUser" @onsubmit:preventDefault>
+        <EditForm Model="Input" OnValidSubmit="LoginUser">
             <DataAnnotationsValidator />
 
             <InputText @bind-Value="Input.Email"
