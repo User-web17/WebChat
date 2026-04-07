@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using WebChat.Components;
 using WebChat.Components.Account;
-using WebChat.Components.Account.Pages.Models;
 using WebChat.Data;
+using WebChat.Components.Account.Hubs;
+using WebChat.Components.Account.Models;
 
 namespace WebChat
 {
@@ -15,11 +16,14 @@ namespace WebChat
         {
             var builder = WebApplication.CreateBuilder(args);
 
+
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddInteractiveWebAssemblyComponents()
                 .AddAuthenticationStateSerialization();
+
+            builder.Services.AddSignalR();
 
 
             builder.Services.AddCascadingAuthenticationState();
@@ -42,6 +46,12 @@ namespace WebChat
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            builder.Services.AddScoped(sp =>
+    new HttpClient
+    {
+        BaseAddress = new Uri("https://localhost:7067")
+    });
+
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -51,6 +61,8 @@ namespace WebChat
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
             var app = builder.Build();
+
+            app.MapHub<ChatHub>("/chatHub");
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -114,6 +126,22 @@ namespace WebChat
                     return Results.BadRequest(result.Errors.Select(e => e.Description));
 
                 return Results.Ok();
+            });
+
+            app.MapGet("/api/chats/{userId}", async (ApplicationDbContext db, string userId) =>
+            {
+                return await db.Chats
+                    .Include(c => c.Users)
+                    .Where(c => c.Users.Any(u => u.Id == userId))
+                    .ToListAsync();
+            });
+
+            app.MapGet("/api/messages/{chatId}", async (ApplicationDbContext db, int chatId) =>
+            {
+                return await db.Messages
+                    .Where(m => m.ChatId == chatId)
+                    .OrderBy(m => m.CreatedAt)
+                    .ToListAsync();
             });
 
             app.Run();

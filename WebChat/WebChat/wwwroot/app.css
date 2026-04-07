@@ -415,3 +415,211 @@ body {
     }
 }
 
+/* ===== TELEGRAM GLASS UI ===== */
+
+.tg {
+    display: flex;
+    height: 100vh;
+    gap: 12px;
+    padding: 12px;
+}
+
+/* ===== GLASS BASE ===== */
+.glass {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+
+/* ===== SIDEBAR ===== */
+.tg-sidebar {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(25px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* TOP */
+.tg-top {
+    padding: 10px 12px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* SEARCH */
+.tg-search input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    color: white;
+}
+
+/* LIST */
+.tg-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* CHAT ITEM */
+.tg-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .tg-item:hover {
+        background: rgba(255,255,255,0.05);
+    }
+
+    .tg-item.active {
+        background: linear-gradient(135deg, var(--accent), rgba(255,255,255,0.05));
+    }
+
+/* META */
+.tg-meta {
+    flex: 1;
+}
+
+.tg-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tg-last {
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+.tg-time {
+    font-size: 11px;
+    opacity: 0.5;
+}
+
+/* ===== MAIN ===== */
+.tg-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(25px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* HEADER */
+.tg-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.tg-status {
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+/* CHAT AREA */
+.tg-chat {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: radial-gradient(circle at 20% 20%, rgba(132,88,179,0.15), transparent), radial-gradient(circle at 80% 80%, rgba(160,210,235,0.1), transparent);
+}
+
+/* MESSAGES */
+.msg {
+    max-width: 55%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.4;
+    backdrop-filter: blur(10px);
+}
+
+    /* OTHER */
+    .msg.other {
+        background: rgba(255,255,255,0.08);
+    }
+
+    /* ME */
+    .msg.me {
+        align-self: flex-end;
+        background: linear-gradient(135deg, var(--accent), #6f46a3);
+    }
+
+/* INPUT */
+.tg-input {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+    .tg-input input {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: none;
+        background: rgba(255,255,255,0.06);
+        color: white;
+    }
+
+    .tg-input button {
+        width: 46px;
+        border-radius: 14px;
+        border: none;
+        background: var(--accent);
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .tg-input button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(132,88,179,0.6);
+        }
+
+/* AVATAR */
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--bg-light));
+}
+
+    .avatar.small {
+        width: 36px;
+        height: 36px;
+    }
+
+/* ===== SCROLLBAR ===== */
+.tg-list::-webkit-scrollbar,
+.tg-chat::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tg-list::-webkit-scrollbar-thumb,
+.tg-chat::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+}

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebChat.Components.Account.Pages.Models
+namespace WebChat.Components.Account.Models
 {
     public class LoginModel
     {

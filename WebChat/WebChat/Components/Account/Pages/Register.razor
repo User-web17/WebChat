@@ -5,7 +5,7 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using WebChat.Data
-@using Account.Pages.Models
+@using Account.Models
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -81,7 +81,7 @@
 
         if (response.IsSuccessStatusCode)
         {
-            NavigationManager.NavigateTo("/Account/Login", forceLoad: true);
+            NavigationManager.NavigateTo("/Account/Login");
         }
         else
         {
@@ -89,5 +89,4 @@
             errorMessage = string.Join(", ", errors ?? new[] { "Registration failed" });
         }
     }
-
 }

@@ -1,0 +1,157 @@
+﻿@page "/chat"
+
+@layout Layout
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using System.Security.Claims
+@inject AuthenticationStateProvider Auth
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<div class="tg">
+
+    <!-- SIDEBAR -->
+    <aside class="tg-sidebar">
+
+        <div class="tg-top">Chats</div>
+
+        <div class="tg-list">
+            @foreach (var chat in chats)
+            {
+                <div class="tg-item @(chat.Id == selectedChatId ? "active" : "")"
+                     @onclick="() => SelectChat(chat.Id)">
+                    <div class="avatar"></div>
+
+                    <div class="tg-meta">
+                        <div class="tg-name">
+                            @string.Join(", ", chat.Users.Select(u => u.UserName))
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="tg-main">
+
+        @if (selectedChatId != null)
+        {
+            <div class="tg-chat">
+
+                @foreach (var msg in messages)
+                {
+                    <div class="msg @(msg.SenderId == userId ? "me" : "other")">
+                        @msg.Text
+                    </div>
+                }
+
+            </div>
+
+            <div class="tg-input">
+                <input @bind="currentMessage"
+                       @onkeydown="HandleKey" />
+
+                <button @onclick="Send">➤</button>
+            </div>
+        }
+        else
+        {
+            <div style="padding:20px;">Select chat</div>
+        }
+
+    </main>
+</div>
+
+@code {
+    private HubConnection? hub;
+
+    private List<ChatDto> chats = new();
+    private List<MessageDto> messages = new();
+
+    private int? selectedChatId;
+    private string currentMessage = "";
+
+    private string? userId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await Auth.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+        {
+            Nav.NavigateTo("/Account/Login");
+            return;
+        }
+
+        chats = await Http.GetFromJsonAsync<List<ChatDto>>($"/api/chats/{userId}") ?? new();
+
+        hub = new HubConnectionBuilder()
+            .WithUrl(Nav.ToAbsoluteUri("/chatHub"))
+            .WithAutomaticReconnect()
+            .Build();
+
+        hub.On<int, string, string, DateTime>("ReceiveMessage",
+            (chatId, senderId, text, time) =>
+            {
+                if (chatId == selectedChatId)
+                {
+                    messages.Add(new MessageDto
+                    {
+                        SenderId = senderId,
+                        Text = text
+                    });
+
+                    InvokeAsync(StateHasChanged);
+                }
+            });
+
+        await hub.StartAsync();
+    }
+
+    private async Task SelectChat(int chatId)
+    {
+        selectedChatId = chatId;
+
+        messages = await Http.GetFromJsonAsync<List<MessageDto>>($"/api/messages/{chatId}") ?? new();
+
+        await hub!.SendAsync("JoinChat", chatId);
+    }
+
+    private async Task Send()
+    {
+        if (string.IsNullOrWhiteSpace(currentMessage) || selectedChatId == null)
+            return;
+
+        await hub!.SendAsync("SendMessage", selectedChatId, userId, currentMessage);
+
+        currentMessage = "";
+    }
+
+    private async Task HandleKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await Send();
+    }
+
+    public class ChatDto
+    {
+        public int Id { get; set; }
+        public List<UserDto> Users { get; set; } = new();
+    }
+
+    public class UserDto
+    {
+        public string UserName { get; set; } = "";
+    }
+
+    public class MessageDto
+    {
+        public string SenderId { get; set; } = "";
+        public string Text { get; set; } = "";
+    }
+}
