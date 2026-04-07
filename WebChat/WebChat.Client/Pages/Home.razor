@@ -4,7 +4,7 @@
 
     <!-- HERO -->
     <section class="hero">
-        
+        <div class="hero-bg second"></div>
         <div class="hero-content">
             <h1 class="fade-in">
                 Simple. Fast. Real-time Chat.
@@ -172,17 +172,42 @@
     <script>
             window.addEventListener("scroll", () => {
                 const hero = document.querySelector(".hero");
+                const navbar = document.querySelector(".navbar");
+                const bg = document.querySelector(".hero-bg");
+                const sections = document.querySelectorAll("section");
 
                 const scrollY = window.scrollY;
+
+                // === HERO PARALLAX (главное ощущение глубины) ===
                 const maxScroll = 400;
-
                 let opacity = 1 - scrollY / maxScroll;
-                let translate = scrollY * 0.3;
-
                 if (opacity < 0) opacity = 0;
 
                 hero.style.opacity = opacity;
-                hero.style.transform = `translateY(${translate}px)`;
+                hero.style.transform = `translateY(${scrollY * 0.3}px) scale(${1 - scrollY / 2000})`;
+                hero.style.filter = `blur(${scrollY / 80}px)`;
+
+                // === BG PARALLAX (медленнее — глубина) ===
+                bg.style.transform = `translateY(${scrollY * 0.15}px) scale(1.05)`;
+
+                // === NAVBAR ===
+                if (scrollY > 50) {
+                    navbar.classList.add("scrolled");
+                } else {
+                    navbar.classList.remove("scrolled");
+                }
+
+                // === SECTION COLOR SWITCH (ВОТ ТУТ ТЫ НАКОСЯЧИЛ РАНЬШЕ) ===
+                let current = 1;
+
+                sections.forEach((sec, i) => {
+                    const top = sec.offsetTop - 200;
+                    if (scrollY >= top) {
+                        current = i + 1;
+                    }
+                });
+
+                document.body.className = "section-" + current;
             });
     </script>
 

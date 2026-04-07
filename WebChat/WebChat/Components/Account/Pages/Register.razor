@@ -21,32 +21,31 @@
         <h2>Create account</h2>
 
         <EditForm Model="Input" OnValidSubmit="RegisterUser" FormName="register">
-            <ValidationSummary />
             <DataAnnotationsValidator />
 
             <InputText @bind-Value="Input.Email"
                        placeholder="Email"
                        type="email"
                        class="input" />
-            <ValidationMessage For="() => Input.Email" />
+            <ValidationMessage For="() => Input.Email" class="validation-message" />
 
             <InputText @bind-Value="Input.Username"
                        placeholder="Username"
                        type="text"
                        class="input" />
-            <ValidationMessage For="() => Input.Username" />
+            <ValidationMessage For="() => Input.Username" class="validation-message" />
 
             <InputText @bind-Value="Input.Password"
                        type="password"
                        placeholder="Password"
                        class="input" />
-            <ValidationMessage For="() => Input.Password" />
+            <ValidationMessage For="() => Input.Password" class="validation-message" />
 
             <InputText @bind-Value="Input.ConfirmPassword"
                        type="password"
                        placeholder="Confirm password"
                        class="input" />
-            <ValidationMessage For="() => Input.ConfirmPassword" />
+            <ValidationMessage For="() => Input.ConfirmPassword" class="validation-message" />
 
             @if (!string.IsNullOrEmpty(errorMessage))
             {

@@ -25,17 +25,18 @@
             <InputText @bind-Value="Input.Email"
                        placeholder="Email"
                        class="input" />
-            <ValidationMessage For="() => Input.Email" />
+            <ValidationMessage For="() => Input.Email" class="validation-message" />
 
             <InputText @bind-Value="Input.Password"
                        type="password"
                        placeholder="Password"
                        class="input" />
-            <ValidationMessage For="() => Input.Password" />
+
+            <ValidationMessage For="() => Input.Password" class="validation-message" />
 
             @if (!string.IsNullOrEmpty(errorMessage))
             {
-                <p style="color: #ff6b6b; margin-bottom:10px;">@errorMessage</p>
+                <div class="auth-error">@errorMessage</div>
             }
 
             <button type="submit" class="btn-primary full">Login</button>
