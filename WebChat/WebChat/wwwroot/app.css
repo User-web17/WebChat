@@ -60,7 +60,7 @@
 
 /* EXTRA BLOCK */
 .info-block {
-    margin-top: 120px;
+    margin-top: 160px;
     padding: 60px;
     border-radius: 16px;
     background: linear-gradient(135deg, var(--accent), transparent);
@@ -398,7 +398,7 @@ body {
 
 /* === ANIMATION === */
 .fade-scale {
-    animation: fadeScale 0.6s ease;
+    animation: fadeScale 0.7s ease;
 }
 
 @keyframes fadeScale {

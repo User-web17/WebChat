@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using WebChat.Components;
 using WebChat.Components.Account;
@@ -19,6 +20,7 @@ namespace WebChat
                 .AddInteractiveWebAssemblyComponents()
                 .AddAuthenticationStateSerialization();
 
+
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
@@ -37,7 +39,7 @@ namespace WebChat
 
             builder.Services.AddIdentityCore<ApplicationUser>(options =>
                 {
-                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedAccount = false;
                     options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -66,11 +68,37 @@ namespace WebChat
 
             app.UseAntiforgery();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapStaticAssets();
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode()
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+
+            app.MapPost("/api/login", async (
+                HttpContext context,
+                 SignInManager<ApplicationUser> signInManager,
+                UserManager<ApplicationUser> userManager,
+                LoginRequest request) =>
+            {
+                var user = await userManager.FindByEmailAsync(request.Email);
+
+                if (user == null)
+                    return Results.BadRequest();
+
+                var result = await signInManager.PasswordSignInAsync(
+                    user.Email,
+                    request.Password,
+                    false,
+                    false);
+
+                if (!result.Succeeded)
+                    return Results.BadRequest();
+
+                return Results.Ok();
+            });
 
             // Add additional endpoints required by the Identity /Account Razor components.
             app.MapAdditionalIdentityEndpoints();

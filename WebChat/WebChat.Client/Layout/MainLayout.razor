@@ -3,13 +3,13 @@
 <div class="layout">
 
     <header class="navbar">
-        <div class="logo" @onclick="() => NavManager.NavigateTo('/'.ToString())">
+        <NavLink href="/" class="logo">
             WebChat
-        </div>
+        </NavLink>
 
         <nav class="nav-links">
-            <a href="/login">Login</a>
-            <a href="/register" class="btn-outline">Register</a>
+            <NavLink href="/Account/Login">Login</NavLink>
+            <NavLink href="/Account/Register" class="btn-outline">Register</NavLink>
         </nav>
     </header>
 
@@ -21,4 +21,5 @@
 
 @code {
     [Inject] NavigationManager NavManager { get; set; }
+
 }
