@@ -1,4 +1,4 @@
- /* === COLORS === */ :root {
+:root {
     --bg-main: #494D5F;
     --bg-light: #A0D2EB;
     --accent: #8458B3;
@@ -16,6 +16,11 @@
 
 .learn-section:nth-child(odd) {
     background: rgba(255,255,255,0.01);
+}
+
+.footer-text {
+    text-align: center;
+    width: 100%;
 }
 
 .learn-section:nth-child(even) {
@@ -630,18 +635,15 @@ body {
     line-height: 1.4;
     backdrop-filter: blur(10px);
 }
-    /* OTHER */
 
     .msg.other {
         background: rgba(255,255,255,0.08);
     }
-    /* ME */
 
     .msg.me {
         align-self: flex-end;
         background: linear-gradient(135deg, var(--accent), #6f46a3);
     }
-/* INPUT */
 
 .tg-input {
     display: flex;
@@ -673,7 +675,6 @@ body {
             transform: scale(1.05);
             box-shadow: 0 0 12px rgba(132,88,179,0.6);
         }
-/* AVATAR */
 
 .avatar {
     width: 42px;
@@ -686,7 +687,6 @@ body {
         width: 36px;
         height: 36px;
     }
-/* ===== SCROLLBAR ===== */
 
 .tg-list::-webkit-scrollbar, .tg-chat::-webkit-scrollbar {
     width: 6px;
@@ -708,7 +708,6 @@ body {
     padding-left: 2px;
     transition: 0.2s ease;
 }
-/* плавное появление */
 
 .validation-message {
     animation: fadeIn 0.25s ease;
