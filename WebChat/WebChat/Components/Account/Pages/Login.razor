@@ -1,12 +1,17 @@
 ﻿@page "/Account/Login"
 
+@rendermode InteractiveServer
+
+
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using WebChat.Data
+@using Account.Pages.Models
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject NavigationManager NavigationManager
 @inject ILogger<Login> Logger
+@inject IHttpClientFactory HttpFactory
 
 <div class="auth-container">
 
@@ -14,7 +19,7 @@
 
         <h2>Sign in</h2>
 
-        <EditForm Model="Input" OnValidSubmit="LoginUser">
+        <EditForm Model="Input" OnValidSubmit="LoginUser" @onsubmit:preventDefault>
             <DataAnnotationsValidator />
 
             <InputText @bind-Value="Input.Email"
@@ -34,6 +39,7 @@
             }
 
             <button type="submit" class="btn-primary full">Login</button>
+
         </EditForm>
 
         <p class="auth-footer">
@@ -48,35 +54,18 @@
 </div>
 
 @code {
-    private InputModel Input { get; set; } = new();
+    private LoginModel Input { get; set; } = new();
     private string? errorMessage;
 
     private async Task LoginUser()
     {
-        var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
+        var http = HttpFactory.CreateClient("api");
 
-        if (user == null)
+        var response = await http.PostAsJsonAsync("/api/login", Input);
+
+        if (response.IsSuccessStatusCode)
         {
-            errorMessage = "Invalid email or password.";
-            return;
-        }
-
-        var result = await SignInManager.PasswordSignInAsync(
-            user.Email,
-            Input.Password,
-            isPersistent: false,
-            lockoutOnFailure: false
-        );
-
-        if (result.Succeeded)
-        {
-            Logger.LogInformation("User logged in");
-
-            NavigationManager.NavigateTo("/Chat", forceLoad: true);
-        }
-        else if (result.IsLockedOut)
-        {
-            errorMessage = "Account is locked.";
+            NavigationManager.NavigateTo("/Chat", true);
         }
         else
         {
@@ -84,13 +73,4 @@
         }
     }
 
-    class InputModel
-    {
-        [Required(ErrorMessage = "Email required")]
-        [EmailAddress(ErrorMessage = "Invalid email")]
-        public string Email { get; set; } = "";
-
-        [Required(ErrorMessage = "Password required")]
-        public string Password { get; set; } = "";
-    }
 }

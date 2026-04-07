@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using WebChat.Components;
 using WebChat.Components.Account;
+using WebChat.Components.Account.Pages.Models;
 using WebChat.Data;
 
 namespace WebChat
@@ -24,27 +25,28 @@ namespace WebChat
             builder.Services.AddCascadingAuthenticationState();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+            builder.Services.AddHttpClient("api", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7067");
+            });
 
-            builder.Services.AddAuthentication(options =>
+            builder.Services
+                .AddIdentity<ApplicationUser, IdentityRole>(options =>
                 {
-                    options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredLength = 6;
                 })
-                .AddIdentityCookies();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-            builder.Services.AddIdentityCore<ApplicationUser>(options =>
-                {
-                    options.SignIn.RequireConfirmedAccount = false;
-                    options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
-                })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddSignInManager()
-                .AddDefaultTokenProviders();
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
@@ -59,17 +61,36 @@ namespace WebChat
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
             app.UseHttpsRedirection();
 
-            app.UseAntiforgery();
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapPost("/api/login", async (
+    HttpContext context,
+    SignInManager<ApplicationUser> signInManager,
+    UserManager<ApplicationUser> userManager,
+    LoginModel model) =>
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
+                    return Results.BadRequest("Invalid credentials");
+
+                var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
+                if (!result.Succeeded)
+                    return Results.BadRequest("Invalid credentials");
+
+                return Results.Ok();
+            });
+
+            app.UseAntiforgery();
 
             app.MapStaticAssets();
             app.MapRazorComponents<App>()
@@ -77,31 +98,6 @@ namespace WebChat
                 .AddInteractiveWebAssemblyRenderMode()
                 .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
 
-            app.MapPost("/api/login", async (
-                HttpContext context,
-                 SignInManager<ApplicationUser> signInManager,
-                UserManager<ApplicationUser> userManager,
-                LoginRequest request) =>
-            {
-                var user = await userManager.FindByEmailAsync(request.Email);
-
-                if (user == null)
-                    return Results.BadRequest();
-
-                var result = await signInManager.PasswordSignInAsync(
-                    user.Email,
-                    request.Password,
-                    false,
-                    false);
-
-                if (!result.Succeeded)
-                    return Results.BadRequest();
-
-                return Results.Ok();
-            });
-
-            // Add additional endpoints required by the Identity /Account Razor components.
-            app.MapAdditionalIdentityEndpoints();
 
             app.Run();
         }
