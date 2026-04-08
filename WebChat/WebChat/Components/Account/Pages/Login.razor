@@ -76,7 +76,9 @@
 
         if (result.Succeeded)
         {
-            NavigationManager.NavigateTo("/Chat", forceLoad: true);
+            NavigationManager.NavigateTo("/Chat", true);
+            await Task.Delay(100);
+            NavigationManager.NavigateTo("/Chat", true);
         }
         else
         {
