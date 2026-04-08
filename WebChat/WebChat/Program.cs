@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Security.Claims;
 using WebChat.Components;
 using WebChat.Components.Account;
-using WebChat.Data;
 using WebChat.Components.Account.Hubs;
 using WebChat.Components.Account.Models;
+using WebChat.Data;
 
 namespace WebChat
 {
@@ -32,6 +35,14 @@ namespace WebChat
             builder.Services.AddHttpClient("api", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7067");
+            })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    UseCookies = true,
+                    CookieContainer = new CookieContainer()
+                };
             });
 
             builder.Services
@@ -94,10 +105,22 @@ namespace WebChat
                 if (user == null)
                     return Results.BadRequest("Invalid credentials");
 
-                var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                var result = await signInManager.PasswordSignInAsync(
+                    user,
+                    model.Password,
+                    isPersistent: true,
+                    lockoutOnFailure: false
+                );
 
                 if (!result.Succeeded)
                     return Results.BadRequest("Invalid credentials");
+
+                await context.SignInAsync(
+                    IdentityConstants.ApplicationScheme,
+                    new ClaimsPrincipal(
+                        await signInManager.CreateUserPrincipalAsync(user)
+                    )
+                );
 
                 return Results.Ok();
             });

@@ -4,6 +4,7 @@
 
 @using Microsoft.AspNetCore.SignalR.Client
 @using System.Security.Claims
+@using WebChat.Components.Account.Models
 @inject AuthenticationStateProvider Auth
 @inject HttpClient Http
 @inject NavigationManager Nav
@@ -138,20 +139,4 @@
             await Send();
     }
 
-    public class ChatDto
-    {
-        public int Id { get; set; }
-        public List<UserDto> Users { get; set; } = new();
-    }
-
-    public class UserDto
-    {
-        public string UserName { get; set; } = "";
-    }
-
-    public class MessageDto
-    {
-        public string SenderId { get; set; } = "";
-        public string Text { get; set; } = "";
-    }
 }
