@@ -23,7 +23,7 @@
     </section>
 
     <!-- LEARN MORE -->
-    <section id="learn" class="learn-section">
+    <section id="learn" class="learn-section style-soft">
 
         <h2 class="section-title">Everything you need</h2>
 
@@ -31,172 +31,107 @@
 
             <div class="feature-card">
                 <h3>💬 Real-time chat</h3>
-                <p>Instant messaging with smooth performance.</p>
+                <p>Lightning-fast messaging that feels instant. No delays, no friction.</p>
             </div>
 
             <div class="feature-card">
                 <h3>👥 Rooms</h3>
-                <p>Create channels and organize conversations.</p>
+                <p>Create channels and organize conversations in a flexible, intuitive way.</p>
             </div>
 
             <div class="feature-card">
                 <h3>📞 Video calls</h3>
-                <p>1-on-1 calls with low latency.</p>
+                <p>Crystal-clear 1-on-1 calls with low latency, anytime, anywhere.</p>
             </div>
 
-        </div>
-
-        <!-- extra section -->
-        <div class="info-block">
-            <div class="info-text">
-                <h2>Built for speed</h2>
-                <p>
-                    Optimized for real-time communication using modern technologies.
-                </p>
-            </div>
         </div>
 
     </section>
 
     <!-- MORE FEATURES -->
-<section class="learn-section">
+    <section class="learn-section style-contrast">
 
-    <h2 class="section-title">Why choose WebChat?</h2>
+        <h2 class="section-title">Why choose WebChat?</h2>
 
-    <div class="features">
-        <div class="feature-card">
-            <h3>⚡ Ultra fast</h3>
-            <p>Messages delivered instantly with minimal delay.</p>
-        </div>
+        <div class="features">
+            <div class="feature-card">
+                <h3>⚡ Ultra fast</h3>
+                <p>Messages delivered instantly with minimal delay and smooth animations.</p>
+            </div>
 
-        <div class="feature-card">
-            <h3>🔒 Secure</h3>
-            <p>End-to-end encryption keeps your conversations safe.</p>
-        </div>
+            <div class="feature-card">
+                <h3>🔒 Secure</h3>
+                <p>End-to-end encryption keeps your conversations private and safe.</p>
+            </div>
 
-        <div class="feature-card">
-            <h3>🌐 Cross-platform</h3>
-            <p>Use WebChat on desktop, mobile, or browser.</p>
-        </div>
-    </div>
-
-</section>
-
-<!-- HISTORY -->
-<section class="learn-section">
-
-    <h2 class="section-title">Our Story</h2>
-
-    <div class="features">
-
-        <div class="feature-card">
-            <h3>🚀 2024 — The idea</h3>
-            <p>
-                Started as a small project to build a faster and cleaner chat experience.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <h3>🛠️ 2025 — Development</h3>
-            <p>
-                Built with modern tech, focusing on performance and simplicity.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <h3>🌍 Today</h3>
-            <p>
-                Growing into a full platform for communication and collaboration.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- STATS -->
-<section class="learn-section">
-
-    <h2 class="section-title">By the numbers</h2>
-
-    <div class="features">
-
-        <div class="feature-card">
-            <h3>⚡ 0.2s</h3>
-            <p>Average message delivery time</p>
-        </div>
-
-        <div class="feature-card">
-            <h3>💬 10K+</h3>
-            <p>Messages sent daily</p>
-        </div>
-
-        <div class="feature-card">
-            <h3>👥 2K+</h3>
-            <p>Active users growing every week</p>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- FINAL CTA -->
-<section class="learn-section">
-
-    <div class="info-block">
-        <div class="info-text">
-            <h2>Ready to start chatting?</h2>
-            <p>
-                Join now and experience real-time communication like never before.
-            </p>
-
-            <div style="margin-top: 20px;">
-                <a href="/register" class="btn-primary">Create account</a>
-                <a href="/login" class="btn-secondary">Login</a>
+            <div class="feature-card">
+                <h3>🌐 Cross-platform</h3>
+                <p>Seamlessly switch between desktop, mobile, or browser without losing context.</p>
             </div>
         </div>
-    </div>
 
-</section>
+    </section>
 
-<!-- FOOTER -->
-<footer class="learn-section" style="padding-bottom: 40px;">
+    <!-- HISTORY -->
+    <section class="learn-section style-glass">
 
-    <div style="opacity: 0.6;" class="footer-text">
-        © 2026 WebChat — Built for speed ⚡
-    </div>
+        <h2 class="section-title">Our Story</h2>
 
-</footer>
+        <div class="features">
+
+            <div class="feature-card">
+                <h3>🚀 2024 — The idea</h3>
+                <p>We dreamed of a chat platform that is fast, minimal, and modern.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>🛠️ 2025 — Development</h3>
+                <p>Built with cutting-edge tech, focusing on speed, UX, and reliability.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>🌍 Today</h3>
+                <p>Now WebChat connects thousands of users daily with real-time communication.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+   
+    <footer class="learn-section style-footer">
+
+        <div class="footer-text">
+            © 2026 WebChat — Built for speed ⚡
+        </div>
+
+    </footer>
 
     <script>
             window.addEventListener("scroll", () => {
-                const hero = document.querySelector(".hero");
                 const navbar = document.querySelector(".navbar");
                 const bg = document.querySelector(".hero-bg");
                 const sections = document.querySelectorAll("section");
 
                 const scrollY = window.scrollY;
 
-                // === HERO PARALLAX (главное ощущение глубины) ===
-                const maxScroll = 400;
-                let opacity = 1 - scrollY / maxScroll;
-                if (opacity < 0) opacity = 0;
-
-                hero.style.opacity = opacity;
-                hero.style.transform = `translateY(${scrollY * 0.3}px) scale(${1 - scrollY / 2000})`;
-                hero.style.filter = `blur(${scrollY / 80}px)`;
-
-                // === BG PARALLAX (медленнее — глубина) ===
-                bg.style.transform = `translateY(${scrollY * 0.15}px) scale(1.05)`;
-
-                // === NAVBAR ===
-                if (scrollY > 50) {
-                    navbar.classList.add("scrolled");
-                } else {
-                    navbar.classList.remove("scrolled");
+                // === HERO BG PARALLAX ===
+                if (bg) {
+                    bg.style.transform = `translateY(${scrollY * 0.4}px) scale(1.05)`;
                 }
 
-                // === SECTION COLOR SWITCH (ВОТ ТУТ ТЫ НАКОСЯЧИЛ РАНЬШЕ) ===
+                // === SMOOTH NAVBAR (ВОТ ГЛАВНЫЙ ФИКС) ===
+                if (navbar) {
+                    const max = 200; // чем больше — тем медленнее затемнение
+                    let progress = scrollY / max;
+
+                    if (progress > 1) progress = 1;
+
+                    navbar.style.background = `rgba(20,20,30, ${progress * 0.85})`;
+                    navbar.style.backdropFilter = `blur(${progress * 10}px)`;
+                }
+
+                // === SECTION BACKGROUND SWITCH ===
                 let current = 1;
 
                 sections.forEach((sec, i) => {

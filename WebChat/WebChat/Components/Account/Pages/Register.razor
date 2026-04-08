@@ -1,7 +1,5 @@
 ﻿@page "/Account/Register"
 
-@rendermode InteractiveServer
-
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using WebChat.Data
@@ -11,12 +9,11 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject NavigationManager NavigationManager
 @inject ILogger<Register> Logger
-@inject IHttpClientFactory HttpFactory
 @inject IJSRuntime JS
 
 <div class="auth-container">
 
-    <div class="auth-card fade-scale">
+    <div class="auth-card fade-scale" @key="Guid.NewGuid()">
 
         <h2>Create account</h2>
 
@@ -74,18 +71,23 @@
 
     private async Task RegisterUser()
     {
-        var http = HttpFactory.CreateClient("api");
-
-        var response = await http.PostAsJsonAsync("/api/register", Input);
-
-        if (response.IsSuccessStatusCode)
+        var user = new ApplicationUser
         {
-            NavigationManager.NavigateTo("/Account/Login");
+            UserName = Input.Username,
+            Email = Input.Email
+        };
+
+        var result = await UserManager.CreateAsync(user, Input.Password);
+
+        if (result.Succeeded)
+        {
+            await SignInManager.SignInAsync(user, isPersistent: true);
+
+            NavigationManager.NavigateTo("/Chat", true);
         }
         else
         {
-            var errors = await response.Content.ReadFromJsonAsync<string[]>();
-            errorMessage = string.Join(", ", errors ?? new[] { "Registration failed" });
+            errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
         }
     }
 }

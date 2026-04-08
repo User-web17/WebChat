@@ -1,7 +1,5 @@
 ﻿@page "/Account/Login"
 
-@rendermode InteractiveServer
-
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
@@ -11,15 +9,14 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject NavigationManager NavigationManager
 @inject ILogger<Login> Logger
-@inject IHttpClientFactory HttpFactory
 
 <div class="auth-container">
 
-    <div class="auth-card fade-scale">
+    <div class="auth-card fade-scale" @key="Guid.NewGuid()">
 
         <h2>Sign in</h2>
 
-        <EditForm Model="Input" OnValidSubmit="LoginUser">
+        <EditForm Model="Input" OnValidSubmit="LoginUser" FormName="login">
             <DataAnnotationsValidator />
 
             <InputText @bind-Value="Input.Email"
@@ -60,13 +57,24 @@
 
     private async Task LoginUser()
     {
-        var http = HttpFactory.CreateClient("api");
+        var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
 
-        var response = await http.PostAsJsonAsync("/api/login", Input);
-
-        if (response.IsSuccessStatusCode)
+        if (user == null)
         {
-            NavigationManager.NavigateTo("/Chat", true);
+            errorMessage = "Invalid email or password.";
+            return;
+        }
+
+        var result = await SignInManager.PasswordSignInAsync(
+            user,
+            Input.Password,
+            isPersistent: true,
+            lockoutOnFailure: false
+        );
+
+        if (result.Succeeded)
+        {
+            NavigationManager.NavigateTo("/Chat", forceLoad: true);
         }
         else
         {

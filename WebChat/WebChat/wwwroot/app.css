@@ -14,44 +14,206 @@
 }
 /* === LEARN SECTION === */
 
-.learn-section:nth-child(odd) {
-    background: rgba(255,255,255,0.01);
+/* ======= Feature Card Base ======= */
+.feature-card {
+    border-radius: 18px;
+    padding: 30px 25px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.4s ease;
 }
 
-.footer-text {
-    text-align: center;
+/* === FIX SPACING & LAYOUT === */
+
+/* сетка вместо flex */
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* карточки не ломают сетку */
+.feature-card {
     width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
 }
 
-.learn-section:nth-child(even) {
-    background: rgba(0,0,0,0.15);
+/* заголовок — больше воздуха */
+.section-title {
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+.learn-section {
+    
+
+}
+
+/* расстояние между секциями */
+.learn-section + .learn-section {
+    margin-top: 140px;
+}
+
+
+/* ======= Soft Section ======= */
+.style-soft {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+}
+
+    .style-soft .feature-card {
+        background: rgba(255,255,255,0.05);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+        .style-soft .feature-card:nth-child(odd) {
+            transform: translateY(-12px);
+        }
+
+        .style-soft .feature-card:nth-child(even) {
+            transform: translateY(12px);
+        }
+
+        .style-soft .feature-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(132,88,179,0.25);
+        }
+
+
+
+/* ======= Contrast Section ======= */
+.style-contrast {
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), transparent);
+    color: #fff;
+}
+
+    .style-contrast .feature-card {
+        background: rgba(20,20,30,0.8);
+        border-left: 4px solid #8458B3;
+        padding: 28px 22px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+        .style-contrast .feature-card:nth-child(2) {
+            transform: translateY(15px);
+        }
+
+        .style-contrast .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 60px rgba(160,210,235,0.3);
+        }
+
+/* ======= Glass Section ======= */
+.style-glass {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(15px);
+}
+
+    .style-glass .feature-card {
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.12);
+        padding: 32px 26px;
+        box-shadow: 0 10px 30px rgba(208,189,244,0.15);
+    }
+
+        .style-glass .feature-card:nth-child(odd) {
+            transform: translateY(-10px) rotate(-1deg);
+        }
+
+        .style-glass .feature-card:nth-child(even) {
+            transform: translateY(10px) rotate(1deg);
+        }
+
+        .style-glass .feature-card:hover {
+            transform: translateY(-8px) rotate(0deg) scale(1.03);
+            box-shadow: 0 30px 60px rgba(208,189,244,0.25);
+        }
+
+/* ======= Final / CTA Section ======= */
+.style-final {
+    text-align: center;
+    background: linear-gradient(180deg, rgba(132,88,179,0.05), rgba(160,210,235,0.05));
+}
+
+    .style-final .feature-card {
+        background: linear-gradient(135deg, rgba(132,88,179,0.1), rgba(160,210,235,0.1));
+        border-radius: 22px;
+        padding: 40px 30px;
+        box-shadow: 0 15px 40px rgba(132,88,179,0.2);
+    }
+
+        .style-final .feature-card:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 25px 60px rgba(132,88,179,0.35);
+        }
+
+/* ======= Card Inner Effects ======= */
+.feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 18px;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+/* ======= Card Titles & Text ======= */
+.feature-card h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.feature-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: inherit;
+}
+
+.learn-section h2 {
+    margin: 30px;
+    padding: 60px;
+    
+}
+.learn-section .footer-text {
+    align-self: center;
 }
 
 .learn-section::before {
     content: "";
     position: absolute;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(132,88,179,0.15), transparent);
+    width: 390px;
+    height: 390px;
+    background: radial-gradient(circle, rgba(132,88,179,0.18), transparent);
     filter: blur(100px);
     top: 20%;
     left: 10%;
     animation: float 10s ease-in-out infinite;
     z-index: 0;
 }
-/* subtle divider */
 
+/* ВТОРОЙ круг (вот это делает магию) */
 .learn-section::after {
     content: "";
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 60%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-    transform: translateX(-50%);
+    width: 290px;
+    height: 290px;
+    background: radial-gradient(circle, rgba(160,210,235,0.12), transparent);
+    filter: blur(90px);
+    bottom: 10%;
+    right: 10%;
+    animation: floatReverse 12s ease-in-out infinite;
+    z-index: 0;
 }
-
 .section-title {
     font-size: 32px;
     margin-bottom: 50px;
@@ -60,10 +222,11 @@
 /* FEATURES */
 
 .features {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 40px; /* ВОТ ГЛАВНОЕ */
+    max-width: 1000px;
+    margin: 0 auto; /* центрирует */
 }
 /* CARD */
 
@@ -171,12 +334,19 @@ body {
 /* === NAVBAR === */
 
 .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
     animation: slideDown 0.6s ease;
+    background: rgba(20, 20, 30, 0);
+    backdrop-filter: blur(0px);
+    transition: background 0.25s ease, backdrop-filter 0.25s ease;
 }
+
 
 .logo {
     font-size: 22px;
@@ -273,8 +443,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: sticky;
-    top: 80px;
+    position: relative;
     z-index: 1;
     overflow: hidden;
     transition: opacity 0.2s linear, transform 0.2s linear, filter 0.2s;
@@ -284,6 +453,10 @@ body {
 .hero-content {
     text-align: center;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px; /* главный фикс от слипания */
 }
 
 .hero h1 {
@@ -320,6 +493,8 @@ body {
     filter: blur(120px);
     animation: float 8s ease-in-out infinite;
 }
+
+
 /* === ANIMATIONS === */ /* fade in */
 
 .fade-in {
@@ -345,13 +520,7 @@ body {
     flex: 1;
 }
 
-.navbar {
-    position: sticky;
-    top: 0;
-    background: rgba(73, 77, 95, 0.8);
-    backdrop-filter: blur(10px);
-    z-index: 100;
-}
+
 /* navbar slide */
 
 @keyframes slideDown {
@@ -481,7 +650,7 @@ body {
 /* === ANIMATION === */
 
 .fade-scale {
-    animation: fadeScale 0.7s ease;
+    animation: fadeScale 0.8s ease;
 }
 
 @keyframes fadeScale {
@@ -737,3 +906,106 @@ input.valid {
     font-size: 13px;
     text-align: left;
 }
+
+/* === VARIETY FOR FEATURE CARDS === */
+
+
+/* 2. СВЕТЯЩАЯСЯ КАРТА */
+.feature-card:nth-child(2) {
+    position: relative;
+}
+
+    .feature-card:nth-child(2)::after {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #8458B3, transparent, #A0D2EB);
+        opacity: 0;
+        z-index: -1;
+        transition: 0.4s;
+    }
+
+    .feature-card:nth-child(2):hover::after {
+        opacity: 1;
+        filter: blur(10px);
+    }
+
+/* 3. НЕОБЫЧНАЯ (GLASS + ROTATE FIX) */
+.feature-card:nth-child(3) {
+    transform: perspective(800px) rotateX(4deg);
+}
+
+    .feature-card:nth-child(3):hover {
+        transform: perspective(800px) rotateX(0deg) scale(1.04);
+    }
+
+/* === ИКОНКИ ЖИВЫЕ === */
+
+.feature-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* анимация иконки */
+.feature-card:hover h3 {
+    transform: translateX(4px);
+    transition: 0.3s;
+}
+
+/* === ЛАЙН ЭФФЕКТ === */
+
+.feature-card::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--bg-light));
+    transition: 0.4s;
+}
+
+.feature-card:hover::after {
+    width: 100%;
+}
+
+/* === DEPTH EFFECT (СЛОИ) === */
+
+.feature-card {
+    transform-style: preserve-3d;
+}
+
+    .feature-card:hover {
+        transform: translateY(-12px) scale(1.03) rotateX(2deg);
+    }
+
+    /* === SOFT GLOW INSIDE === */
+
+    .feature-card:hover {
+        box-shadow: 0 20px 50px rgba(132,88,179,0.25), inset 0 0 20px rgba(255,255,255,0.05);
+    }
+
+    /* === TEXT IMPROVEMENT === */
+
+    .feature-card p {
+        opacity: 0.75;
+        transition: 0.3s;
+    }
+
+    .feature-card:hover p {
+        opacity: 1;
+    }
+
+
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+    text-align: center;
+    opacity: 0.7;
+}
+
