@@ -89,7 +89,9 @@
             return;
         }
 
-        chats = await Http.GetFromJsonAsync<List<ChatDto>>($"/api/chats/{userId}") ?? new();
+        chats = await Http.GetFromJsonAsync<List<ChatDto>>(
+                $"https://localhost:7067/api/chats/{userId}"
+            );
 
         hub = new HubConnectionBuilder()
             .WithUrl(Nav.ToAbsoluteUri("/chatHub"))

@@ -12,19 +12,21 @@
 
 <div class="auth-container">
 
-    <div class="auth-card fade-scale" @key="Guid.NewGuid()">
+    <div class="auth-card fade-scale">
 
         <h2>Sign in</h2>
 
-        <EditForm Model="Input" OnValidSubmit="LoginUser" FormName="login">
+        <EditForm Model="Input" OnSubmit="LoginUser" FormName="login">
             <DataAnnotationsValidator />
 
             <InputText @bind-Value="Input.Email"
+                       @bind-Value:event="oninput"
                        placeholder="Email"
                        class="input" />
             <ValidationMessage For="() => Input.Email" class="validation-message" />
 
             <InputText @bind-Value="Input.Password"
+                       @bind-Value:event="oninput"
                        type="password"
                        placeholder="Password"
                        class="input" />
@@ -54,11 +56,15 @@
 </div>
 
 @code {
+    [SupplyParameterFromForm]
     private LoginModel Input { get; set; } = new();
     private string? errorMessage;
 
-    private async Task LoginUser()
+    private async Task LoginUser(EditContext context)
     {
+        if (!context.Validate())
+            return;
+
         var user = await SignInManager.UserManager.FindByEmailAsync(Input.Email);
 
         if (user == null)
@@ -77,13 +83,12 @@
         if (result.Succeeded)
         {
             NavigationManager.NavigateTo("/Chat", true);
-            await Task.Delay(100);
-            NavigationManager.NavigateTo("/Chat", true);
         }
         else
         {
             errorMessage = "Invalid email or password.";
         }
+
     }
 
 }

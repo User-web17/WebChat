@@ -86,7 +86,6 @@ namespace WebChat
 
             app.UseRouting();
 
-
             app.UseAuthentication();
             app.UseAuthorization();
 
