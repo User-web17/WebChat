@@ -23,7 +23,7 @@
 
         <div class="tg-add">
             <input placeholder="Add user..." @bind="newContact" />
-            <button @onclick="AddContact">+</button>
+            <button @onclick="() => showAddModal = true">+</button>
         </div>
 
         <div class="tg-profile" @onclick="OpenProfile">
@@ -92,6 +92,20 @@
             <div style="padding:20px;">Select chat</div>
         }
 
+        @if (showAddModal)
+        {
+            <div class="overlay" @onclick="CloseModal">
+                <div class="modal" @onclick:stopPropagation>
+                    <h3>Add Contact</h3>
+
+                    <input placeholder="Username"
+                           @bind="newContact" />
+
+                    <button @onclick="CreateContact">Add</button>
+                </div>
+            </div>
+        }
+
     </main>
 </div>
 
@@ -113,11 +127,14 @@
     private string search = "";
 
     private string? userId;
+    private int? previousChatId;
+    private bool showAddModal = false;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await Auth.GetAuthenticationStateAsync();
         var user = authState.User;
+
 
         userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -131,7 +148,6 @@
             $"{API}/api/chats/{userId}"
         ) ?? new();
 
-        // дефолтный чат
         if (!chats.Any(c => c.Id == 0))
         {
             chats.Insert(0, new ChatDto
@@ -153,24 +169,30 @@
             .Build();
 
         hub.On<int, string, string, DateTime>("ReceiveMessage",
-            async (chatId, senderId, text, time) =>
+    async (chatId, senderId, text, time) =>
+    {
+        if (chatId == selectedChatId)
+        {
+            if (senderId == userId) return;
+
+            messages.Add(new MessageDto
             {
-                if (chatId == selectedChatId)
-                {
-                    // защита от дублей
-                    if (senderId == userId) return;
-
-                    messages.Add(new MessageDto
-                    {
-                        SenderId = senderId,
-                        Text = text
-                    });
-
-                    shouldScroll = true;
-
-                    await InvokeAsync(StateHasChanged);
-                }
+                SenderId = senderId,
+                Text = text
             });
+
+            shouldScroll = true;
+            await InvokeAsync(StateHasChanged);
+        }
+
+        var chat = chats.FirstOrDefault(c => c.Id == chatId);
+        if (chat != null)
+        {
+            chats.Remove(chat);
+            chats.Insert(0, chat);
+        }
+    });
+
 
         await hub.StartAsync();
     }
@@ -186,26 +208,31 @@
             await ScrollToBottom();
         }
     }
-
     private async Task SelectChat(int chatId)
     {
+        if (previousChatId != null && hub is not null)
+        {
+            await hub.SendAsync("LeaveChat", previousChatId);
+        }
+
         selectedChatId = chatId;
+        previousChatId = chatId;
 
         if (chatId == 0)
         {
-            messages = new List<MessageDto>
+            messages = new()
+        {
+            new MessageDto
             {
-                new MessageDto
-                {
-                    SenderId = "system",
-                    Text = "Welcome to WebChat 👋"
-                }
-            };
+                SenderId = "system",
+                Text = "Welcome to WebChat 👋"
+            }
+        };
         }
         else
         {
             messages = await Http.GetFromJsonAsync<List<MessageDto>>(
-                $"/api/messages/{chatId}") ?? new();
+                $"{API}/api/messages/{chatId}") ?? new();
         }
 
         if (hub is not null)
@@ -221,10 +248,14 @@
         if (string.IsNullOrWhiteSpace(currentMessage) || selectedChatId == null)
             return;
 
+        var text = currentMessage;
+
+        currentMessage = "";
+
         var msg = new MessageDto
         {
             SenderId = userId,
-            Text = currentMessage
+            Text = text
         };
 
         messages.Add(msg);
@@ -233,17 +264,17 @@
         {
             ChatId = selectedChatId,
             SenderId = userId,
-            Text = currentMessage
+            Text = text
         });
 
         if (hub is not null)
         {
-            await hub.SendAsync("SendMessage", selectedChatId, userId, currentMessage);
+            await hub.SendAsync("SendMessage", selectedChatId, userId, text);
         }
 
-        currentMessage = "";
         shouldScroll = true;
     }
+
 
     private async Task HandleKey(KeyboardEventArgs e)
     {
@@ -288,4 +319,35 @@
     {
         Nav.NavigateTo("/Account/Manage");
     }
+
+    private void CloseModal()
+    {
+        showAddModal = false;
+    }
+
+    private async Task CreateContact()
+    {
+        if (string.IsNullOrWhiteSpace(newContact))
+            return;
+
+        var response = await Http.PostAsJsonAsync($"{API}/api/chats", new
+        {
+            UserName = newContact,
+            OwnerId = userId
+        });
+
+        if (!response.IsSuccessStatusCode) return;
+
+        var newChat = await response.Content.ReadFromJsonAsync<ChatDto>();
+
+        if (newChat != null)
+        {
+            chats.Insert(0, newChat);
+            await SelectChat(newChat.Id);
+        }
+
+        newContact = "";
+        showAddModal = false;
+    }
+
 }
